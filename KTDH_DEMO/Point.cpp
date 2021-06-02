@@ -24,3 +24,9 @@ Point::Point(GLfloat x, GLfloat y, GLfloat z) {
 Point::~Point() {
 
 }
+
+void Point::update() {
+	x = matrix.matrix[0][0];
+	y = matrix.matrix[0][1];
+	z = matrix.matrix[0][2];
+}

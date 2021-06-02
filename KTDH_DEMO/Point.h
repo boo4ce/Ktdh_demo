@@ -11,4 +11,6 @@ public:
 	Point();
 	Point(GLfloat x, GLfloat y, GLfloat z);
 	~Point();
+
+	void update();
 };
