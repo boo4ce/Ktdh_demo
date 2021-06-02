@@ -1,0 +1,21 @@
+1. Để im nó tự quay
+(Có thể chọn trục bằng cách bỏ đóng khung trục cần quay và đóng khung trục không cần trong code)
+
+2. Chuột giữa để pause và resume
+
+3. Chuột trái và phải để xoay hướng 
+( tư tưởng xoay màn theo trục )
+( có 2 dạng: tự phục hồi và ko phục hồi (ấn R để trải nghiệm))
+
+4. Nút z hoặc x để phóng to và thu nhỏ ( phép tỷ lệ )
+(tỷ lệ cố định)
+5. Nút l để khóa xoay ( khóa chức năng 3 )
+
+6. Khi khóa xoay thì có thể thục hiện phép tịnh tiến theo phương thức giống 3
+
+7. Nút c hoặc v để thực hiện phép biến dạng
+( PHÉP NÀY KHÔNG THỂ QUAY LẠI )
+
+8. <b>TẤT CẢ CÁC PHÉP TỶ LỆ, TỊNH TIẾN, BIẾN DẠNG NÊN PAUSE RỒI THỰC HIỆN</b>
+
+      Đọc MatrixProvider và main để thêm thông tin chi tiết

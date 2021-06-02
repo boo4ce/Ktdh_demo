@@ -31,12 +31,13 @@ Axis randomAxis = Axis(0, 0, 10, Point(0, 0, 0));
 
 FixedMatrix totalT;
 
+// 4 goc toa do cua hinh vuong
 Point leftTop = Point(-0.5, 0.5, -0.5);
 Point rightTop = Point(-0.5, 0.5, 0.5);
 Point leftBottom = Point(0.5, 0.5, 0.5);
 Point rightBottom = Point(0.5, 0.5, -0.5);
 
-
+// duoi dang ma tran
 double ini[4][4] = {
 	{-0.5, 0.5, -0.5, 1},
 	{-0.5, 0.5, 0.5, 1},
@@ -48,6 +49,7 @@ FixedMatrix coor = FixedMatrix(ini);
 
 boolean pause = false;
 boolean canRotate = true;
+boolean autoRestore = true;
 
 bool mouseLeftDown;
 bool mouseRightDown;
@@ -186,6 +188,15 @@ void DrawCoodinate()
 	glEnable(GL_LIGHTING);
 }
 
+// ----------------------------- Cac phep bien doi ------------------------------------------
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+
+void mutation(double b, double c, double d, double f, double g, double i) {
+	coor.multiWith(provider.getBdMatrix(b, c, d, f, g, i));
+	glutPostRedisplay(); // yeu cau ve lai
+}
+
 void translate(double x, double y, double z) {
 	coor.multiWith(provider.getTtMatrix(x, y, z));
 	glutPostRedisplay();
@@ -196,6 +207,7 @@ void scale(double x, double y, double z) {
 	glutPostRedisplay();
 }
 
+//main feature
 void rotate() {
 	/*leftTop.matrix.multiWith(totalT);
 	rightTop.matrix.multiWith(totalT);
@@ -206,6 +218,12 @@ void rotate() {
 	glutPostRedisplay();
 }
 
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+
+
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -214,8 +232,8 @@ void display(void)
 	gluLookAt(5.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 
 	if (canRotate) {
-		glRotatef(cameraAngleX, 0, 1, 0);
-		glRotatef(cameraAngleY, 1, 0, 0);
+		glRotatef(cameraAngleX, 1, 0, 0);
+		glRotatef(cameraAngleY, 0, 1, 0);
 		glRotatef(cameraAngleZ, 0, 0, 1);
 	}
 	else {
@@ -278,14 +296,16 @@ void init(void)
 }
 
 void reset() {
-	//cameraAngleX = 0;
-	//cameraAngleY = 0;
-	//cameraAngleZ = 0;
-	if (!canRotate) {
+	if (autoRestore) {
 		cameraAngleX = 0;
 		cameraAngleY = 0;
 		cameraAngleZ = 0;
 	}
+	//if (!canRotate) {
+	//	cameraAngleX = 0;
+	//	cameraAngleY = 0;
+	//	cameraAngleZ = 0;
+	//}
 }
 
 void mouseCB(int button, int state, int x, int y)
@@ -347,7 +367,7 @@ void mouseMotionCB(int x, int y)
 	if (mouseLeftDown)
 	{
 		cameraAngleY += (x - mouseX) * 0.1f;
-		cameraAngleX += (y - mouseY) * 0.1f;
+		cameraAngleX += -(y - mouseY) * 0.1f;
 		mouseX = x;
 		mouseY = y;
 		glutPostRedisplay();
@@ -355,11 +375,14 @@ void mouseMotionCB(int x, int y)
 
 	if (mouseRightDown)
 	{
-		/*cameraDistanceX = (x - mouseX) * 0.01f;
-		cameraDistanceY = -(y - mouseY) * 0.01f;*/
-		cameraAngleZ += (x - mouseX) * 0.1f;
-		mouseY = y;
-		mouseX = x;
+		if (canRotate) {
+			cameraAngleZ += (x - mouseX) * 0.1f;
+			mouseX = x;
+		}
+		else {
+			cameraAngleZ += -(y - mouseY) * 0.1f;
+			mouseY = y;
+		}
 		glutPostRedisplay();
 	}
 }
@@ -373,10 +396,20 @@ void keyboard(unsigned char key, int x, int y)
 		case 'x':
 			scale(2, 2, 2);
 			break;
+		case 'c':
+			mutation(1, 2, 3, 2, 1, 0);
+			break;
+		case 'v':
+			mutation(-1, -2, -3, -2, -1, 0);
+			break;
 		case 'l':
 			reset();
 			canRotate = !canRotate;
-			cout << "Lock Rotate: " << canRotate << endl;
+			cout << "Lock Rotate: " << (canRotate?"false":"true") << endl;
+			break;
+		case 'r':
+			autoRestore = !autoRestore;
+			cout << "Auto Restore: " << (autoRestore ? "true" : "false") << endl;
 			break;
 	}
 }
