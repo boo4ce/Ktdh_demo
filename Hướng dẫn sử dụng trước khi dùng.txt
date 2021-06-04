@@ -19,3 +19,7 @@
 8. <b>TẤT CẢ CÁC PHÉP TỶ LỆ, TỊNH TIẾN, BIẾN DẠNG NÊN PAUSE RỒI THỰC HIỆN</b>
 
       Đọc MatrixProvider và main để thêm thông tin chi tiết
+
+
+----------------------- UPDATE ------------------------------
+1. Nút a để đưa camera ra xa và s để đưa lại gần

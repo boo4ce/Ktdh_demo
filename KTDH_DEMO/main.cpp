@@ -1,9 +1,11 @@
-﻿#include "Axis.h"
+#pragma warning (disable : 4996)
+#include "Axis.h"
 #include "MatrixProvider.h"
 #include <math.h>
 #include <iostream>
 #include <Windows.h>
-#include <cstdlib>
+#include <string.h>
+
 using namespace std;
 GLfloat g_box;
 
@@ -22,10 +24,10 @@ Axis axisZ = Axis(0, 0, 2, Point(0, 0, 0));
 //Axis randomAxis = Axis(0, 0, 10, Point(1, 1, 0));
 
 //truc // khac canh
-//Axis randomAxis = Axis(0, 0, 10, Point(1, 0.3, 0));
+Axis randomAxis = Axis(0, 0, 10, Point(1, 0.3, 0));
 
 //truc toa do
-Axis randomAxis = Axis(0, 0, 10, Point(0, 0, 0));
+//Axis randomAxis = Axis(0, 0, 10, Point(0, 0, 0));
 
 
 
@@ -45,7 +47,15 @@ double ini[4][4] = {
 	{0.5, 0.5, -0.5, 1}
 };
 
+double init2[4][4] = {
+	{-0.5, -0.5, 0.5, 1},
+	{0.5, -0.5, 0.5, 1},
+	{0.5, 0.5, 0.5, 1},
+	{-0.5, 0.5, 0.5, 1}
+};
+
 FixedMatrix coor = FixedMatrix(ini);
+FixedMatrix coor2 = FixedMatrix(init2);
 
 boolean pause = false;
 boolean canRotate = true;
@@ -61,6 +71,9 @@ float cameraAngleX;
 float cameraAngleY;
 float cameraAngleZ;
 float times = 1;
+
+float lookAtX = 5, lookAtY = 5, lookAtZ = 5;
+
 
 void t_rotate(Axis axis, int angle) {
 	//tinh tien ve goc toa do
@@ -117,61 +130,12 @@ void drawRect() {
 	glVertex3f(coor.matrix[2][0], coor.matrix[2][1], coor.matrix[2][2]);
 	glVertex3f(coor.matrix[3][0], coor.matrix[3][1], coor.matrix[3][2]);
 
+	//glVertex3f(coor2.matrix[0][0], coor2.matrix[0][1], coor2.matrix[0][2]);
+	//glVertex3f(coor2.matrix[1][0], coor2.matrix[1][1], coor2.matrix[1][2]);
+	//glVertex3f(coor2.matrix[2][0], coor2.matrix[2][1], coor2.matrix[2][2]);
+	//glVertex3f(coor2.matrix[3][0], coor2.matrix[3][1], coor2.matrix[3][2]);
+
 	glEnd();
-}
-
-GLuint MakeCube()
-{
-	GLuint boxDisplay;
-	boxDisplay = glGenLists(1);
-	glNewList(boxDisplay, GL_COMPILE);
-
-	glBegin(GL_QUADS);
-	//// Front Face
-	//glNormal3f(0.0, 0.0, 1.0f);
-	//glVertex3f(-1.0f, -1.0f, 1.0f);
-	//glVertex3f(1.0f, -1.0f, 1.0f);
-	//glVertex3f(1.0f, 1.0f, 1.0f);
-	//glVertex3f(-1.0f, 1.0f, 1.0f);
-
-	 //Back Face
-	//glNormal3f(0.0, 0.0, -1.0f);
-	//glVertex3f(-1.0f, -1.0f, -1.0f);
-	//glVertex3f(-1.0f, 1.0f, -1.0f);
-	//glVertex3f(1.0f, 1.0f, -1.0f);
-	//glVertex3f(1.0f, -1.0f, -1.0f);
-
-	//// Top Face
-	//glNormal3f(0.0, 0.1, 0.0f);
-	glVertex3f(leftTop.x, leftTop.y, leftTop.z);
-	glVertex3f(rightTop.x, rightTop.y, rightTop.z);
-	glVertex3f(leftBottom.x, leftBottom.y, leftBottom.z);
-	glVertex3f(rightBottom.x, rightBottom.y, rightBottom.z);
-
-	//// Bottom Face
-	//glNormal3f(0.0, -1.0, 0.0f);
-	//glVertex3f(-1.0f, -1.0f, -1.0f);
-	//glVertex3f(1.0f, -1.0f, -1.0f);
-	//glVertex3f(1.0f, -1.0f, 1.0f);
-	//glVertex3f(-1.0f, -1.0f, 1.0f);
-
-	////// Right face
-	//glNormal3f(1.0, 0.0, 0.0f);
-	//glVertex3f(1.0f, -1.0f, -1.0f);
-	//glVertex3f(1.0f, 1.0f, -1.0f);
-	//glVertex3f(1.0f, 1.0f, 1.0f);
-	//glVertex3f(1.0f, -1.0f, 1.0f);
-
-	////// Left Face
-	//glNormal3f(-1.0, 0.0, 0.0f);
-	//glVertex3f(-1.0f, -1.0f, -1.0f);
-	//glVertex3f(-1.0f, -1.0f, 1.0f);
-	//glVertex3f(-1.0f, 1.0f, 1.0f);
-	//glVertex3f(-1.0f, 1.0f, -1.0f);
-	glEnd();
-
-	glEndList();
-	return boxDisplay;
 }
 
 void DrawCoodinate()
@@ -215,43 +179,49 @@ void rotate() {
 	rightBottom.matrix.multiWith(totalT);*/
 
 	coor.multiWith(totalT);
+	coor2.multiWith(totalT);
 	glutPostRedisplay();
 }
 
 // ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-
 
 void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_TEXTURE_2D);
 	glLoadIdentity();
 
-	gluLookAt(5.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+	gluLookAt(lookAtX, lookAtY, lookAtZ, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 
-	if (canRotate) {
-		glRotatef(cameraAngleX, 1, 0, 0);
-		glRotatef(cameraAngleY, 0, 1, 0);
-		glRotatef(cameraAngleZ, 0, 0, 1);
+	if (isReal) {
+		glBindTexture(GL_TEXTURE_2D, sunTexture);
+		gluSphere(sun, 2.5, 1000, 1000);
 	}
 	else {
-		translate(cameraAngleX * 0.1f, cameraAngleY * 0.1f, cameraAngleZ * 0.1f);
-	}
+		if (canRotate) {
+			glRotatef(cameraAngleX, 1, 0, 0);
+			glRotatef(cameraAngleY, 0, 1, 0);
+			glRotatef(cameraAngleZ, 0, 0, 1);
+		}
+		else {
+			translate(cameraAngleX * 0.1f, cameraAngleY * 0.1f, cameraAngleZ * 0.1f);
+		}
 
-	glPushMatrix();
-	//glTranslatef(cameraDistanceX, cameraAngleY, 0);
+		glPushMatrix();
+		//glTranslatef(cameraDistanceX, cameraAngleY, 0);
 
-	DrawCoodinate();
+		DrawCoodinate();
 
-	drawRandomAxis(randomAxis);
-	drawRect();
+		drawRandomAxis(randomAxis);
+		drawRect();
 
-	glPopMatrix();
+		glPopMatrix();
 
-	if (!pause) {
-		rotate();
+		if (!pause) {
+			rotate();
+		}
 	}
 
 	Sleep(100);
@@ -291,8 +261,10 @@ void init(void)
 	GLfloat shininess = 50.0f;
 	glMateriali(GL_FRONT, GL_SHININESS, shininess);
 
-	g_box = MakeCube();
+	//g_box = MakeCube();
 	t_rotate(randomAxis, 20);
+
+	//initt();
 }
 
 void reset() {
@@ -397,7 +369,7 @@ void keyboard(unsigned char key, int x, int y)
 			scale(2, 2, 2);
 			break;
 		case 'c':
-			mutation(1, 2, 3, 2, 1, 0);
+			mutation(0.3, 2, 1, 2, 1, 0);
 			break;
 		case 'v':
 			mutation(-1, -2, -3, -2, -1, 0);
@@ -410,6 +382,12 @@ void keyboard(unsigned char key, int x, int y)
 		case 'r':
 			autoRestore = !autoRestore;
 			cout << "Auto Restore: " << (autoRestore ? "true" : "false") << endl;
+			break;
+		case 'a':
+			lookAtX++; lookAtY++; lookAtZ++;
+			break;
+		case 's':
+			lookAtX--; lookAtY--; lookAtZ--;
 			break;
 	}
 }
@@ -431,3 +409,57 @@ int main()
 	glutMainLoop();
 	return 0;
 }
+
+//GLuint MakeCube()
+//{
+//	GLuint boxDisplay;
+//	boxDisplay = glGenLists(1);
+//	glNewList(boxDisplay, GL_COMPILE);
+//
+//	glBegin(GL_QUADS);
+//	//// Front Face
+//	//glNormal3f(0.0, 0.0, 0.5);
+//	//glVertex3f(-0.5, -0.5, 0.5);
+//	//glVertex3f(0.5, -0.5, 0.5);
+//	//glVertex3f(0.5, 0.5, 0.5);
+//	//glVertex3f(-0.5, 0.5, 0.5);
+//
+//	 //Back Face
+//	//glNormal3f(0.0, 0.0, -0.5);
+//	//glVertex3f(-0.5, -0.5, -0.5);
+//	//glVertex3f(-0.5, 0.5, -0.5);
+//	//glVertex3f(0.5, 0.5, -0.5);
+//	//glVertex3f(0.5, -0.5, -0.5);
+//
+//	//// Top Face
+//	//glNormal3f(0.0, 0.1, 0.0f);
+//	glVertex3f(leftTop.x, leftTop.y, leftTop.z);
+//	glVertex3f(rightTop.x, rightTop.y, rightTop.z);
+//	glVertex3f(leftBottom.x, leftBottom.y, leftBottom.z);
+//	glVertex3f(rightBottom.x, rightBottom.y, rightBottom.z);
+//
+//	//// Bottom Face
+//	//glNormal3f(0.0, -1.0, 0.0f);
+//	//glVertex3f(-0.5, -0.5, -0.5);
+//	//glVertex3f(0.5, -0.5, -0.5);
+//	//glVertex3f(0.5, -0.5, 0.5);
+//	//glVertex3f(-0.5, -0.5, 0.5);
+//
+//	////// Right face
+//	//glNormal3f(1.0, 0.0, 0.0f);
+//	//glVertex3f(0.5, -0.5, -0.5);
+//	//glVertex3f(0.5, 0.5, -0.5);
+//	//glVertex3f(0.5, 0.5, 0.5);
+//	//glVertex3f(0.5, -0.5, 0.5);
+//
+//	////// Left Face
+//	//glNormal3f(-1.0, 0.0, 0.0f);
+//	//glVertex3f(-0.5, -0.5, -0.5);
+//	//glVertex3f(-0.5, -0.5, 0.5);
+//	//glVertex3f(-0.5, 0.5, 0.5);
+//	//glVertex3f(-0.5, 0.5, -0.5);
+//	glEnd();
+//
+//	glEndList();
+//	return boxDisplay;
+//}
