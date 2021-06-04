@@ -195,33 +195,27 @@ void display(void)
 
 	gluLookAt(lookAtX, lookAtY, lookAtZ, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 
-	if (isReal) {
-		glBindTexture(GL_TEXTURE_2D, sunTexture);
-		gluSphere(sun, 2.5, 1000, 1000);
+	if (canRotate) {
+		glRotatef(cameraAngleX, 1, 0, 0);
+		glRotatef(cameraAngleY, 0, 1, 0);
+		glRotatef(cameraAngleZ, 0, 0, 1);
 	}
 	else {
-		if (canRotate) {
-			glRotatef(cameraAngleX, 1, 0, 0);
-			glRotatef(cameraAngleY, 0, 1, 0);
-			glRotatef(cameraAngleZ, 0, 0, 1);
-		}
-		else {
-			translate(cameraAngleX * 0.1f, cameraAngleY * 0.1f, cameraAngleZ * 0.1f);
-		}
+		translate(cameraAngleX * 0.1f, cameraAngleY * 0.1f, cameraAngleZ * 0.1f);
+	}
 
-		glPushMatrix();
-		//glTranslatef(cameraDistanceX, cameraAngleY, 0);
+	glPushMatrix();
+	//glTranslatef(cameraDistanceX, cameraAngleY, 0);
 
-		DrawCoodinate();
+	DrawCoodinate();
 
-		drawRandomAxis(randomAxis);
-		drawRect();
+	drawRandomAxis(randomAxis);
+	drawRect();
 
-		glPopMatrix();
+	glPopMatrix();
 
-		if (!pause) {
-			rotate();
-		}
+	if (!pause) {
+		rotate();
 	}
 
 	Sleep(100);
@@ -385,9 +379,11 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case 'a':
 			lookAtX++; lookAtY++; lookAtZ++;
+			glutPostRedisplay();
 			break;
 		case 's':
 			lookAtX--; lookAtY--; lookAtZ--;
+			glutPostRedisplay();
 			break;
 	}
 }
